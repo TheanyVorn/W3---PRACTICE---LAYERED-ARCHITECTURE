@@ -23,31 +23,38 @@ class Answer {
   }
 }
 
+class Submission {
+  final String playerName;
+  final List<Answer> answers;
+
+  Submission({required this.playerName, required this.answers});
+}
+
 class Quiz {
   List<Question> questions;
-  List<Answer> answers = [];
+  List<Submission> submissions = [];
 
   Quiz({required this.questions});
 
-  void addAnswer(Answer answer) {
-    this.answers.add(answer);
-  }
-
-  int getTotalPoint() {
-    int totalPoint = 0;
-    for (Answer answer in answers) {
-      if (answer.isGood()) {
-        totalPoint += answer.question.points;
-      }
+  Submission? getPlayerName(String name) {
+    try {
+      return submissions.firstWhere((s) => s.playerName == name);
+    } catch (e) {
+      return null;
     }
-    return totalPoint;
   }
 
-  // int get totalPoint => getTotalPoint();
+  void addSubmission(Submission submission) {
+    var existing = getPlayerName(submission.playerName);
+    if (existing != null) {
+      submissions.remove(existing);
+    }
+    submissions.add(submission);
+  }
 
-  int getScoreInPercentage() {
+  int getTotalPercentage(Submission submission) {
     int totalScore = 0;
-    for (Answer answer in answers) {
+    for (Answer answer in submission.answers) {
       if (answer.isGood()) {
         totalScore++;
       }
@@ -55,9 +62,17 @@ class Quiz {
     return ((totalScore / questions.length) * 100).toInt();
   }
 
-  // int get totalScore => getScoreInPercentage();
+  int getTotalPoints(Submission submission) {
+    int totalPoint = 0;
+    for (Answer answer in submission.answers) {
+      if (answer.isGood()) {
+        totalPoint += answer.question.points;
+      }
+    }
+    return totalPoint;
+  }
 
   void clearAnswers() {
-    answers.clear();
+    submissions.clear();
   }
 }
