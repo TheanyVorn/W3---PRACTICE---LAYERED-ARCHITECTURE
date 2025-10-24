@@ -9,8 +9,8 @@ void main() {
       Question q2 =
           Question(title: "4+2", choices: ["4", "5", "6"], goodChoice: "6");
       Quiz quiz = Quiz(questions: [q1, q2]);
-      Answer a1 = Answer(question: q1, answerChoice: "2");
-      Answer a2 = Answer(question: q2, answerChoice: "6");
+      Answer a1 = Answer(questionId: q1.id, answerChoice: "2");
+      Answer a2 = Answer(questionId: q2.id, answerChoice: "6");
       Submission sub = Submission(playerName: "test", answers: [a1, a2]);
       quiz.addSubmission(sub);
       expect(quiz.getTotalPercentage(sub), equals(100));
@@ -26,16 +26,16 @@ void main() {
       Submission sub1 = Submission(
         playerName: "Player1",
         answers: [
-          Answer(question: q1, answerChoice: "A"),
-          Answer(question: q2, answerChoice: "B"),
+          Answer(questionId: q1.id, answerChoice: "A"),
+          Answer(questionId: q2.id, answerChoice: "B"),
         ],
       );
       quiz.addSubmission(sub1);
       Submission sub2 = Submission(
         playerName: "Player2",
         answers: [
-          Answer(question: q1, answerChoice: "A"),
-          Answer(question: q2, answerChoice: "Wrong"),
+          Answer(questionId: q1.id, answerChoice: "A"),
+          Answer(questionId: q2.id, answerChoice: "Wrong"),
         ],
       );
       quiz.addSubmission(sub2);
@@ -53,16 +53,16 @@ void main() {
       Submission sub1 = Submission(
         playerName: "RepeatPlayer",
         answers: [
-          Answer(question: q1, answerChoice: "A"),
-          Answer(question: q2, answerChoice: "B"),
+          Answer(questionId: q1.id, answerChoice: "A"),
+          Answer(questionId: q2.id, answerChoice: "B"),
         ],
       );
       quiz.addSubmission(sub1);
       Submission sub2 = Submission(
         playerName: "RepeatPlayer",
         answers: [
-          Answer(question: q1, answerChoice: "Wrong"),
-          Answer(question: q2, answerChoice: "Wrong"),
+          Answer(questionId: q1.id, answerChoice: "Wrong"),
+          Answer(questionId: q2.id, answerChoice: "Wrong"),
         ],
       );
       quiz.addSubmission(sub2);

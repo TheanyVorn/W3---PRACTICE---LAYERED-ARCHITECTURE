@@ -7,40 +7,45 @@ class QuizConsole {
   QuizConsole({required this.quiz});
 
   void startQuiz() {
-    print('--- Welcome to the Quiz ---');
-    bool isFirstPlayer = true;
+    print('--- Welcome to the Quiz ---\n');
     while (true) {
-      String prompt = isFirstPlayer ? 'Your name: ' : 'Player: ';
-      isFirstPlayer = false;
-      stdout.write(prompt);
-      String? name = stdin.readLineSync();
-      if (name == null || name.isEmpty) {
-        print('--- Quiz Finished ---');
-        break;
-      }
-      List<Answer> playerAnswers = [];
-      for (var question in quiz.questions) {
-        print('Question: ${question.title} - ${question.points} points');
-        print('Choices: ${question.choices}');
-        stdout.write('Your answer: ');
-        String? userInput = stdin.readLineSync();
-        if (userInput != null && userInput.isNotEmpty) {
-          Answer answer = Answer(question: question, answerChoice: userInput);
-          playerAnswers.add(answer);
-        } else {
-          print('No answer entered. Skipping question.');
-        }
-        print('');
-      }
-      Submission submission =
-          Submission(playerName: name, answers: playerAnswers);
-      int percentage = quiz.getTotalPercentage(submission);
-      int total = quiz.getTotalPoints(submission);
-      print('$name, your score in percentage: $percentage%');
-      print('$name, your score in point: $total');
-      print('Player:$name, score: $total%');
-      print('--- Quiz Finished ---');
-      quiz.addSubmission(submission);
+      stdout.write('Your name: ');
+      final name = stdin.readLineSync();
+      if (name == null || name.isEmpty) break;
+
+      final answers = quiz.questions
+          .map((q) => _askQuestion(q))
+          .whereType<Answer>()
+          .toList();
+
+      final sub = Submission(playerName: name, answers: answers);
+      quiz.addSubmission(sub);
+      _displayScores(sub);
+      print('');
+    }
+    print('--- Quiz Finished ---');
+  }
+
+  Answer? _askQuestion(Question q) {
+    print('Question: ${q.title} - (${q.points} points)');
+    print('Choices: ${q.choices}');
+    stdout.write('Your answer: ');
+    final input = stdin.readLineSync();
+    if (input != null && input.isNotEmpty) {
+      return Answer(questionId: q.id, answerChoice: input);
+    }
+    print('No answer entered. Skipping question.');
+    return null;
+  }
+
+  void _displayScores(Submission current) {
+    print(
+        '${current.playerName}, your score in percentage: ${quiz.getTotalPercentage(current)} %');
+    print(
+        '${current.playerName}, your score in points: ${quiz.getTotalPoints(current)} %');
+    for (var sub in quiz.submissions) {
+      print(
+          'Player: ${sub.playerName}        Score:${quiz.getTotalPoints(sub)}');
     }
   }
 }
